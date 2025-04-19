@@ -1,0 +1,315 @@
+#pragma version 6
+txn ApplicationID
+int 0
+==
+bnz main_l24
+txn OnCompletion
+int DeleteApplication
+==
+bnz main_l23
+txn OnCompletion
+int UpdateApplication
+==
+bnz main_l22
+txn OnCompletion
+int CloseOut
+==
+bnz main_l21
+txn OnCompletion
+int OptIn
+==
+bnz main_l20
+txn OnCompletion
+int NoOp
+==
+bnz main_l7
+err
+main_l7:
+txna ApplicationArgs 0
+byte "createCircle"
+==
+bnz main_l19
+txna ApplicationArgs 0
+byte "initializeUser"
+==
+bnz main_l18
+txna ApplicationArgs 0
+byte "joinCircle"
+==
+bnz main_l17
+txna ApplicationArgs 0
+byte "contribute"
+==
+bnz main_l16
+txna ApplicationArgs 0
+byte "distribute"
+==
+bnz main_l15
+txna ApplicationArgs 0
+byte "emergencyWithdraw"
+==
+bnz main_l14
+err
+main_l14:
+txn Sender
+byte "Creator"
+app_global_get
+==
+assert
+txna ApplicationArgs 1
+btoi
+store 4
+txna Accounts 1
+store 5
+load 4
+byte "EmergencyFund"
+app_global_get
+<=
+assert
+itxn_begin
+int pay
+itxn_field TypeEnum
+load 4
+itxn_field Amount
+load 5
+itxn_field Receiver
+int 1000
+itxn_field Fee
+itxn_submit
+byte "EmergencyFund"
+byte "EmergencyFund"
+app_global_get
+load 4
+-
+app_global_put
+int 1
+return
+main_l15:
+byte "CurrentRecipient"
+app_global_get
+store 2
+global Round
+byte "NextDistribution"
+app_global_get
+>=
+assert
+global CurrentApplicationAddress
+balance
+byte "EmergencyFund"
+app_global_get
+-
+store 1
+itxn_begin
+int pay
+itxn_field TypeEnum
+load 1
+itxn_field Amount
+load 2
+itxn_field Receiver
+int 1000
+itxn_field Fee
+itxn_submit
+load 2
+byte "ReceivedPayout"
+load 2
+byte "ReceivedPayout"
+app_local_get
+int 1
++
+app_local_put
+byte "Creator"
+app_global_get
+store 3
+byte "CurrentRecipient"
+load 3
+app_global_put
+byte "NextDistribution"
+global Round
+byte "FrequencyInRounds"
+app_global_get
++
+app_global_put
+int 1
+return
+main_l16:
+gtxn 1 TypeEnum
+int pay
+==
+assert
+gtxn 1 Amount
+byte "ContributionAmount"
+app_global_get
+==
+assert
+gtxn 1 Receiver
+global CurrentApplicationAddress
+==
+assert
+txn Sender
+byte "Contributions"
+txn Sender
+byte "Contributions"
+app_local_get
+int 1
++
+app_local_put
+gtxn 1 Amount
+int 10
+/
+store 0
+byte "EmergencyFund"
+byte "EmergencyFund"
+app_global_get
+load 0
++
+app_global_put
+txn Sender
+byte "Reputation"
+txn Sender
+byte "Reputation"
+app_local_get
+int 1
++
+app_local_put
+int 1
+return
+main_l17:
+byte "CurrentMembers"
+app_global_get
+byte "MemberCap"
+app_global_get
+<
+assert
+byte "CurrentMembers"
+byte "CurrentMembers"
+app_global_get
+int 1
++
+app_global_put
+txn Sender
+byte "JoinedRound"
+global Round
+app_local_put
+txn Sender
+byte "Contributions"
+int 0
+app_local_put
+txn Sender
+byte "ReceivedPayout"
+int 0
+app_local_put
+txn Sender
+byte "Reputation"
+int 100
+app_local_put
+int 1
+return
+main_l18:
+txn Sender
+byte "JoinedRound"
+global Round
+app_local_put
+txn Sender
+byte "Contributions"
+int 0
+app_local_put
+txn Sender
+byte "ReceivedPayout"
+int 0
+app_local_put
+txn Sender
+byte "Reputation"
+int 100
+app_local_put
+int 1
+return
+main_l19:
+byte "CircleName"
+txna ApplicationArgs 1
+app_global_put
+byte "ContributionAmount"
+txna ApplicationArgs 2
+btoi
+app_global_put
+byte "FrequencyInRounds"
+txna ApplicationArgs 3
+btoi
+app_global_put
+byte "MemberCap"
+txna ApplicationArgs 4
+btoi
+app_global_put
+byte "CurrentMembers"
+int 1
+app_global_put
+byte "CurrentRecipient"
+txn Sender
+app_global_put
+byte "NextDistribution"
+global Round
+txna ApplicationArgs 3
+btoi
++
+app_global_put
+byte "EmergencyFund"
+int 0
+app_global_put
+byte "Creator"
+txn Sender
+app_global_put
+int 1
+return
+main_l20:
+int 1
+return
+main_l21:
+int 1
+return
+main_l22:
+txn Sender
+byte "Creator"
+app_global_get
+==
+return
+main_l23:
+txn Sender
+byte "Creator"
+app_global_get
+==
+return
+main_l24:
+byte "CircleName"
+txna ApplicationArgs 1
+app_global_put
+byte "ContributionAmount"
+txna ApplicationArgs 2
+btoi
+app_global_put
+byte "FrequencyInRounds"
+txna ApplicationArgs 3
+btoi
+app_global_put
+byte "MemberCap"
+txna ApplicationArgs 4
+btoi
+app_global_put
+byte "CurrentMembers"
+int 1
+app_global_put
+byte "CurrentRecipient"
+txn Sender
+app_global_put
+byte "NextDistribution"
+global Round
+txna ApplicationArgs 3
+btoi
++
+app_global_put
+byte "EmergencyFund"
+int 0
+app_global_put
+byte "Creator"
+txn Sender
+app_global_put
+int 1
+return
