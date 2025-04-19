@@ -257,7 +257,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 📬 Contact
 
-For questions or feedback, please reach out to [your-email@example.com](mailto:your-email@example.com) or create an issue in this repository.
+For questions or feedback, please reach out to [your-email@example.com](https://x.com/Altcoin_daddy) or create an issue in this repository.
 
 ---
 
